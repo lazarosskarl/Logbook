@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,9 +39,19 @@ public class DeleteUser extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            HttpSession session=request.getSession(false);
-            if(session!=null){
-                String n=(String)session.getAttribute("uname");
+            Cookie[] cookies = request.getCookies();
+            int counter = 0;
+            String userName = "";
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals("uname")) {
+                        userName = cookie.getValue();
+                        counter++;
+                    }
+                }
+            }
+            if(counter!=0){
+                String n=userName;
                 List<Post> posts = PostDB.getPosts();
                 for (Post postIt : posts) {
                      if(postIt.getUserName().equals(n)){
@@ -48,7 +59,15 @@ public class DeleteUser extends HttpServlet {
                      }
                 }
                 UserDB.deleteUser(n);
-                session.invalidate();
+                if (counter != 0) {
+                out.print("Logging out " + userName);
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals("uname")) {
+                        cookie.setMaxAge(0);
+                        cookie.setValue("");
+                        response.addCookie(cookie);
+                    }
+                }
                 out.println("User Deleted");
                 response.setStatus(200);
             }
@@ -56,11 +75,12 @@ public class DeleteUser extends HttpServlet {
                 out.println("No active session");
                 response.setStatus(400);
             }
-        } catch (ClassNotFoundException ex) {
+        } 
+        }   
+        catch (ClassNotFoundException ex) {
             Logger.getLogger(DeleteUser.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

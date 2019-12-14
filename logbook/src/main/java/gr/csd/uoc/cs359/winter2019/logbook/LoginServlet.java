@@ -12,6 +12,7 @@ import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,7 +38,7 @@ public class LoginServlet extends HttpServlet {
             throws ServletException, IOException, ClassNotFoundException {
         String username=request.getParameter("username");
         String password=request.getParameter("password");
-        response.setContentType("text/html;charset=UTF-8");
+        response.setContentType("text/plain;charset=UTF-8");
         User user=UserDB.getUser(username);
         if(user!=null)
         {
@@ -46,20 +47,21 @@ public class LoginServlet extends HttpServlet {
                 try (PrintWriter out = response.getWriter()) {
                     out.println("Welcome "+username);
                     response.setStatus(200);
-                    HttpSession session=request.getSession();
-                    session.setAttribute("uname",username);
+                    Cookie loginCookie = new Cookie("uname",username);
+                    loginCookie.setMaxAge(10*60);
+                    response.addCookie(loginCookie);
                 }
             }
             else{
                 try (PrintWriter out = response.getWriter()) {
-                    out.println("ERROR");
+                    out.println("ERROR FALSE PASWORD");
                     response.setStatus(400);
                 }
             }
         }
         else {
             try (PrintWriter out = response.getWriter()) {
-                    out.println("ERROR");
+                    out.println("ERROR NOT USER FOUND");
                     response.setStatus(400);
                 }
         }

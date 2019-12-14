@@ -376,9 +376,11 @@ function check_login()
     var res_username=patt_username.test(document.getElementById("usernamelogin").value);
     var patt_password=new RegExp(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,10}$/);
     var res_password=patt_password.test(document.getElementById("passwordlogin").value);
+    alert(res_password);
+     alert(res_username);
     var loged=false;
     
-    if(res_username == true && res_password == true)
+    if(res_password == true)
     {
         var username="username="+document.getElementById("usernamelogin").value;
         var password="password="+document.getElementById("passwordlogin").value;
@@ -443,6 +445,7 @@ function check_login()
                 document.getElementById("form2").style.display="none";
             }
             else if(http.status===400){
+                alert(http.responseText);
                 document.getElementById("login_message").innerHTML="Couldn't Log in";
                 document.getElementById("login_message").style.color = "red";
             }
@@ -1199,38 +1202,43 @@ function check_image_file(){
 }
 
 function delete_user(){
-    var http = new XMLHttpRequest();
-    alert("OPAAAA");
-    http.open('GET', '/logbook/DeleteUser',true);
-        http.onload = function() {
+    var r = confirm("Delete User?");
+    if (r == true) {
+        var http = new XMLHttpRequest();
+        http.open('GET', '/logbook/DeleteUser', true);
+        http.onload = function () {
             // Do whatever with response
             console.log(http.responseText);
-            document.getElementById("username").value=" ";
-            document.getElementById("email").value=" ";
-            document.getElementById("password1").value="";
-            document.getElementById("firstname").value=" ";
-            document.getElementById("lastname").value=" ";
-            document.getElementById("birthday").value="";
+            document.getElementById("username").value = " ";
+            document.getElementById("email").value = " ";
+            document.getElementById("password1").value = "";
+            document.getElementById("firstname").value = " ";
+            document.getElementById("lastname").value = " ";
+            document.getElementById("birthday").value = "";
             //document.getElementById("country").value=" ";
-            document.getElementById("city").value=" ";
-            document.getElementById("address").value=" ";
-            document.getElementById("prof").value=" ";
-            document.getElementById("interests").value=" ";
-            document.getElementById("info").value=" ";
-            document.getElementById("login").style.display="none";
-            document.getElementById("form1").style.display="none";
-            document.getElementById("loginscreen").style.display="none";
-            document.getElementById("intro").style.display="block";
-            var button_type ="type = "+'"' +"button" +'" '+" id="+'"'+"indexlogin"+'"';
-            var button_action = "onclick ="+'"'+"login()"+'"';
-            var button_class = "class ="+ '"'+"mybutton"+'"';
-            var login="<button "+button_type+button_action+button_class+">Login</button>";
-            var button_type1 ="type = "+'"' +"button" +'" '+" id="+'"'+"indexsign"+'"';
-            var button_action1 = "onclick ="+'"'+"signup()"+'"';
-            var button_class1 = "class ="+ '"'+"mybutton"+'"';
-            var signup="<button "+button_type1+button_action1+button_class1+">Sign Up</button>";
-            document.getElementById("actionbuttons").innerHTML=login + signup;
+            document.getElementById("city").value = " ";
+            document.getElementById("address").value = " ";
+            document.getElementById("prof").value = " ";
+            document.getElementById("interests").value = " ";
+            document.getElementById("info").value = " ";
+            document.getElementById("login").style.display = "none";
+            document.getElementById("form1").style.display = "none";
+            document.getElementById("loginscreen").style.display = "none";
+            document.getElementById("intro").style.display = "block";
+            var button_type = "type = " + '"' + "button" + '" ' + " id=" + '"' + "indexlogin" + '"';
+            var button_action = "onclick =" + '"' + "login()" + '"';
+            var button_class = "class =" + '"' + "mybutton" + '"';
+            var login = "<button " + button_type + button_action + button_class + ">Login</button>";
+            var button_type1 = "type = " + '"' + "button" + '" ' + " id=" + '"' + "indexsign" + '"';
+            var button_action1 = "onclick =" + '"' + "signup()" + '"';
+            var button_class1 = "class =" + '"' + "mybutton" + '"';
+            var signup = "<button " + button_type1 + button_action1 + button_class1 + ">Sign Up</button>";
+            document.getElementById("actionbuttons").innerHTML = login + signup;
             console.log(http.responseText);
         }
         http.send();
+    }
+    else{
+        alert("Deletion Cancelled");
+    }
 }

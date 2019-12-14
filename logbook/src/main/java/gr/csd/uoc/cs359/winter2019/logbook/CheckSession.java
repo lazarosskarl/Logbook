@@ -8,6 +8,7 @@ package gr.csd.uoc.cs359.winter2019.logbook;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,8 +34,8 @@ public class CheckSession extends HttpServlet {
         response.setContentType("text/plain;charset=UTF-8");
         
         try (PrintWriter out = response.getWriter()) {
-            HttpSession session=request.getSession(false);
-            if(session==null)
+            //HttpSession session=request.getSession(false);
+            /*if(session==null)
             {
                 out.println("No active session");
                 response.setStatus(400);
@@ -44,6 +45,25 @@ public class CheckSession extends HttpServlet {
                 String n=(String)session.getAttribute("uname");  
                 out.println(n);
                 response.setStatus(200);
+            }*/
+            Cookie[] cookies = request.getCookies();
+            int counter=0;
+            String userName="";
+            if(cookies !=null){
+                for(Cookie cookie : cookies){
+                    if(cookie.getName().equals("uname")) {
+                    userName = cookie.getValue();
+                    counter++;
+                    }
+                }
+            }
+            if (counter!=0){
+                response.setStatus(200);
+                out.print(userName);
+            }
+            else{
+                out.println("No active session");
+                response.setStatus(400);
             }
         }
     }

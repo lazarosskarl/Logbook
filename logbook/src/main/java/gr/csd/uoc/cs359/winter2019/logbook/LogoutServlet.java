@@ -8,6 +8,7 @@ package gr.csd.uoc.cs359.winter2019.logbook;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,10 +33,29 @@ public class LogoutServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            HttpSession session=request.getSession(false);  
-            String n=(String)session.getAttribute("uname");  
-            out.print("Logging out "+n);  
-            session.invalidate();
+            Cookie[] cookies = request.getCookies();
+            int counter = 0;
+            String userName = "";
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals("uname")) {
+                        userName = cookie.getValue();
+                        counter++;
+                    }
+                }
+            }
+            if (counter != 0) {
+                out.print("Logging out " + userName);
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals("uname")) {
+                        cookie.setMaxAge(0);
+                        cookie.setValue("");
+                        response.addCookie(cookie);
+                    }
+                }
+                response.setStatus(200);
+            }
+            else response.setStatus(400);
         }
     }
 

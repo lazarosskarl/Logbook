@@ -88,7 +88,7 @@ public class ExampleAPI {
         PostDB.addPost(post);
 
         System.out.println("==>Deleting");
-        UserDB.deleteUser("turing");
+        UserDB.deleteUser("patatrakas");
         System.out.println("==>Deleted");
         if (UserDB.checkValidUserName("turing")) {
             // You can be a new Turing!

@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -76,18 +77,28 @@ public class ShowPosts extends HttpServlet {
                 response.setStatus(200);
             }
             else if(mode.equals("1")){
-                HttpSession session=request.getSession(false);  
-                String n=(String)session.getAttribute("uname");  
-                if (session != null) {
+                Cookie[] cookies = request.getCookies();
+                int counter = 0;
+                String userName = "";
+                if (cookies != null) {
+                    for (Cookie cookie : cookies) {
+                        if (cookie.getName().equals("uname")) {
+                            userName = cookie.getValue();
+                            counter++;
+                        }
+                    }
+                }
+                String n = userName;
+                if (counter != 0) {
                     List<Post> posts = PostDB.getTop10RecentPostsOfUser(n);
                     out.println('"' + "posts" + '"' + ":[");
                     for (Post postIt : posts) {
                         postusername = '"' + "username" + '"' + ':' + '"' + postIt.getUserName() + '"' + ',';
                         String idstring = String.valueOf(postIt.getPostID());
                         postID = '"' + "postID" + '"' + ':' + '"' + idstring + '"' + ',';
-                        String tmp=postIt.getDescription();
-                        tmp=tmp.replaceAll("\n"," ");
-                        description='"'+"description"+'"'+':'+'"'+tmp+'"'+',';
+                        String tmp = postIt.getDescription();
+                        tmp = tmp.replaceAll("\n", " ");
+                        description = '"' + "description" + '"' + ':' + '"' + tmp + '"' + ',';
                         resourceURL = '"' + "resourceURL" + '"' + ':' + '"' + postIt.getResourceURL() + '"' + ',';
                         imageURL = '"' + "imageURL" + '"' + ':' + '"' + postIt.getImageURL() + '"' + ',';
                         imageBase64 = '"' + "imageBase64" + '"' + ':' + '"' + postIt.getImageBase64() + '"' + ',';
@@ -99,12 +110,10 @@ public class ShowPosts extends HttpServlet {
                     json = json.substring(0, json.length() - 1) + ']';
                     out.println(json);
                     response.setStatus(200);
-                }
-                else{
+                } else {
                     response.setStatus(400);
                 }
-            }
-            else if(mode.equals("2")){
+            } else if (mode.equals("2")) {
                 if (username != "") {
                     List<Post> posts = PostDB.getTop10RecentPostsOfUser(username);
                     out.println('"' + "posts" + '"' + ":[");
@@ -112,9 +121,9 @@ public class ShowPosts extends HttpServlet {
                         postusername = '"' + "username" + '"' + ':' + '"' + postIt.getUserName() + '"' + ',';
                         String idstring = String.valueOf(postIt.getPostID());
                         postID = '"' + "postID" + '"' + ':' + '"' + idstring + '"' + ',';
-                        String tmp=postIt.getDescription();
-                        tmp=tmp.replaceAll("\n"," ");
-                        description='"'+"description"+'"'+':'+'"'+tmp+'"'+',';
+                        String tmp = postIt.getDescription();
+                        tmp = tmp.replaceAll("\n", " ");
+                        description = '"' + "description" + '"' + ':' + '"' + tmp + '"' + ',';
                         resourceURL = '"' + "resourceURL" + '"' + ':' + '"' + postIt.getResourceURL() + '"' + ',';
                         imageURL = '"' + "imageURL" + '"' + ':' + '"' + postIt.getImageURL() + '"' + ',';
                         imageBase64 = '"' + "imageBase64" + '"' + ':' + '"' + postIt.getImageBase64() + '"' + ',';
@@ -126,12 +135,10 @@ public class ShowPosts extends HttpServlet {
                     json = json.substring(0, json.length() - 1) + ']';
                     out.println(json);
                     response.setStatus(200);
-                }
-                else{
+                } else {
                     response.setStatus(400);
                 }
-            }
-            else{
+            } else {
                 response.setStatus(400);
             }
         } catch (ClassNotFoundException ex) {

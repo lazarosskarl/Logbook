@@ -12,6 +12,7 @@ import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,16 +37,19 @@ public class GetUserInfo extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, ClassNotFoundException {
         response.setContentType("application/json;charset=UTF-8");
-        HttpSession session=request.getSession(false);  
-        if(session==null){
-            response.setContentType("text/html;charset=UTF-8");
-            try (PrintWriter out = response.getWriter()){
-                out.println("<h0>Bad Request</h0>");
-                response.setStatus(400);
+        Cookie[] cookies = request.getCookies();
+        int counter = 0;
+        String userName = "";
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("uname")) {
+                    userName = cookie.getValue();
+                    counter++;
+                }
             }
-        }
-        else{
-            String n=(String)session.getAttribute("uname"); 
+        } 
+        if(counter!=0){
+            String n=userName;
             User user=UserDB.getUser(n);
             try (PrintWriter out = response.getWriter()) {
                 out.println(
@@ -66,6 +70,9 @@ public class GetUserInfo extends HttpServlet {
                 );
                 response.setStatus(200);
             }
+        }
+        else{
+            response.setStatus(400);
         }
     }
 

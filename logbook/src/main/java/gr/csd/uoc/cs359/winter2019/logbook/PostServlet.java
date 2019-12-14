@@ -12,6 +12,7 @@ import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,8 +35,17 @@ public class PostServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, ClassNotFoundException {
-        HttpSession session=request.getSession(false);  
-        String n=(String)session.getAttribute("uname");
+        Cookie[] cookies = request.getCookies();
+        int counter = 0;
+        String userName = "";
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("uname")) {
+                    userName = cookie.getValue();
+                    counter++;
+                }
+            }
+        }
         String description=request.getParameter("description");
         String resourceurl=request.getParameter("resourceurl");
         String imageurl=request.getParameter("imageurl");
@@ -46,13 +56,13 @@ public class PostServlet extends HttpServlet {
         
         response.setContentType("text/plain;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            if(session==null){
+            if(counter==0){
                 out.println("no active session so cant post");
                 response.setStatus(400);
             }
             else{
                 Post post = new Post();
-                post.setUserName(n);
+                post.setUserName(userName);
                 post.setDescription(description);
                 post.setImageURL(imageurl);
                 post.setResourceURL(resourceurl);

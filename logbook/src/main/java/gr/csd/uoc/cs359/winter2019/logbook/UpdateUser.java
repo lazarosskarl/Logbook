@@ -12,6 +12,7 @@ import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,8 +36,17 @@ public class UpdateUser extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, ClassNotFoundException {
-        HttpSession session=request.getSession(false);  
-        String n=(String)session.getAttribute("uname");  
+        Cookie[] cookies = request.getCookies();
+        int counter = 0;
+        String userName = "";
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("uname")) {
+                    userName = cookie.getValue();
+                    counter++;
+                }
+            }
+        } 
         
         String username=request.getParameter("username");
         String email=request.getParameter("email");
@@ -52,45 +62,47 @@ public class UpdateUser extends HttpServlet {
         String interests=request.getParameter("interests");
         String info=request.getParameter("info");
         
-        
-        User user = UserDB.getUser(n);
-        user.setPassword(password);
-        user.setFirstName(firstname);
-        user.setLastName(lastname);
-        user.setBirthDate(birthdate);
-        user.setCountry(country);
-        user.setTown(city);
-        user.setAddress(address);
-        user.setOccupation(prof);
-        user.setGender(gender);
-        user.setInterests(interests);
-        user.setInfo(info);
-        
-        response.setContentType("text/plain;charset=UTF-8");
-        if ((username.equals(user.getUserName()))==false && UserDB.checkValidUserName(username)==false)
-        {
-            try (PrintWriter out = response.getWriter()) {
-                out.println("Username not available.");
-                response.setStatus(400);
+        if (counter != 0) {
+            User user = UserDB.getUser(userName);
+            user.setPassword(password);
+            user.setFirstName(firstname);
+            user.setLastName(lastname);
+            user.setBirthDate(birthdate);
+            user.setCountry(country);
+            user.setTown(city);
+            user.setAddress(address);
+            user.setOccupation(prof);
+            user.setGender(gender);
+            user.setInterests(interests);
+            user.setInfo(info);
+
+            response.setContentType("text/plain;charset=UTF-8");
+            if ((username.equals(user.getUserName())) == false && UserDB.checkValidUserName(username) == false) {
+                try (PrintWriter out = response.getWriter()) {
+                    out.println("Username not available.");
+                    response.setStatus(400);
+                }
+            } else if ((!email.equals(user.getEmail())) && !UserDB.checkValidEmail(email)) {
+                try (PrintWriter out = response.getWriter()) {
+                    out.println("Email not available.");
+                    response.setStatus(400);
+                }
+            } else {
+                //user.setUserName(username);
+                user.setEmail(email);
+                UserDB.updateUser(user);
+                try (PrintWriter out = response.getWriter()) {
+                    out.println("User updated." + username);
+                    response.setStatus(200);
+                }
             }
         }
-        else if((!email.equals(user.getEmail())) && !UserDB.checkValidEmail(email))
-        {
+        else{
             try (PrintWriter out = response.getWriter()) {
-                out.println("Email not available.");
-                response.setStatus(400);
+                    out.println("No active session");
+                    response.setStatus(400);
             }
-        }    
-        else
-        {
-            //user.setUserName(username);
-            user.setEmail(email);
-            UserDB.updateUser(user);
-            try (PrintWriter out = response.getWriter()) {
-                out.println("User updated." +username);
-                response.setStatus(200);
-            }
-       }
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

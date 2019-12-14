@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,13 +35,21 @@ public class getSession extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/plain;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            HttpSession session=request.getSession(false); 
-            if(session==null){
-                response.setStatus(400);
+            Cookie[] cookies = request.getCookies();
+            int counter = 0;
+            String userName = "";
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals("uname")) {
+                        userName = cookie.getValue();
+                        counter++;
+                    }
+                }
             }
-            else{
-                String n=(String)session.getAttribute("uname");  
-                out.print(n);
+            if (counter == 0) {
+                response.setStatus(400);
+            } else {
+                out.print(userName);
                 response.setStatus(200);
             }
         }
