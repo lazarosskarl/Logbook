@@ -5,6 +5,7 @@
  */
 package gr.csd.uoc.cs359.winter2019.logbook.db;
 
+import gr.csd.uoc.cs359.winter2019.logbook.model.Comment;
 import gr.csd.uoc.cs359.winter2019.logbook.model.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -455,5 +456,9 @@ public class UserDB {
                 Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+
+    public static List<Comment> getComments() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

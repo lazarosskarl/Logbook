@@ -56,6 +56,14 @@
         <servlet-name>DeleteUser</servlet-name>
         <servlet-class>gr.csd.uoc.cs359.winter2019.logbook.DeleteUser</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AddComment</servlet-name>
+        <servlet-class>gr.csd.uoc.cs359.winter2019.logbook.AddComment</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>GetComments</servlet-name>
+        <servlet-class>gr.csd.uoc.cs359.winter2019.logbook.GetComments</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>SignUpServlet</servlet-name>
         <url-pattern>/SignUpServlet</url-pattern>
@@ -111,6 +119,14 @@
     <servlet-mapping>
         <servlet-name>DeleteUser</servlet-name>
         <url-pattern>/DeleteUser</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddComment</servlet-name>
+        <url-pattern>/AddComment</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetComments</servlet-name>
+        <url-pattern>/GetComments</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

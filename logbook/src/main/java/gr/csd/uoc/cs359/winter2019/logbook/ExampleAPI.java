@@ -5,8 +5,10 @@
  */
 package gr.csd.uoc.cs359.winter2019.logbook;
 
+import gr.csd.uoc.cs359.winter2019.logbook.db.CommentDB;
 import gr.csd.uoc.cs359.winter2019.logbook.db.PostDB;
 import gr.csd.uoc.cs359.winter2019.logbook.db.UserDB;
+import gr.csd.uoc.cs359.winter2019.logbook.model.Comment;
 import gr.csd.uoc.cs359.winter2019.logbook.model.Post;
 import gr.csd.uoc.cs359.winter2019.logbook.model.User;
 import java.util.List;
@@ -58,11 +60,11 @@ public class ExampleAPI {
             System.out.println("User already exists.... No more Turings please!");
         }
 
-        List<User> users = UserDB.getUsers();
+        List<Comment> users = CommentDB.getComments();
 
         int i = 0;
         System.out.println("==>Retrieving");
-        for (User userIt : users) {
+        for (Comment userIt : users) {
             System.out.println("userIt:" + i++);
             System.out.println(userIt);
         }

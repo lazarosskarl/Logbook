@@ -376,8 +376,6 @@ function check_login()
     var res_username=patt_username.test(document.getElementById("usernamelogin").value);
     var patt_password=new RegExp(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,10}$/);
     var res_password=patt_password.test(document.getElementById("passwordlogin").value);
-    alert(res_password);
-     alert(res_username);
     var loged=false;
     
     if(res_password == true)
@@ -1022,6 +1020,9 @@ function show_posts(mode){
                 if(counter.imageBase64!="" && counter.imageBase64!="null")html=html+"<image src='"+counter.imageBase64+"' class='imagepost'>";
                 html=html+"<span id='"+counter.postID+"'></span>";
                 html=html+"</button></p>";
+                html=html+"<textarea name='commentarea"+counter.postID+"'id='commentarea"+counter.postID+"' rows='1' cols='30' placeholder='Add a coomment'>"+
+                        "</textarea>";
+                html=html+"<br><button type='button' class='mybutton' onclick='add_comment("+counter.postID+");'>Add comment..</button><br>";
                 var uname=counter.username;
                 if(session==uname){
                     html=html+"<button type='button' class='mybutton' onclick='delete_post("+counter.postID+','+mode+");'>Delete Post..</button><br>";
@@ -1058,6 +1059,7 @@ function pop_up(postid){
         }
     };
     var toServer="postid="+postid;
+    var html="";
     var http = new XMLHttpRequest();
     http.open('POST', '/logbook/GetPostByID', true);
     http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -1067,7 +1069,6 @@ function pop_up(postid){
             var counter=JSON.parse(http.responseText);
             document.getElementById("modalmap").innerHTML="";
             document.getElementById("modalheader").innerHTML="PostID: "+ counter.postID;
-            var html="";
             html=html+"<p id='modalpar'>"+"Username:<br>"+counter.username+"<br><br>Description:<br>"+counter.description;
             html=html+"<br><br>Created At:<br>"+counter.createdAt;
             if(counter.imageURL!="" && counter.imageURL!="null")html=html+"<br><br><image src='"+counter.imageURL+"' class='imagepost'>"; 
@@ -1076,6 +1077,7 @@ function pop_up(postid){
                 html = html + "<br><br>Resource URL:<br><a href='"+
                         counter.resourceURL + "' target='_blank'>" + counter.resourceURL + "</a>";
             html = html + "<br><br>Longitude: <br>" + counter.longitude + "<br><br>Latitude: <br>" + counter.latitude;
+            html = html + "<p id='comments'> </p>"
             html = html + "</p>";
             document.getElementById("modalinfo").innerHTML = html;
 
@@ -1103,6 +1105,22 @@ function pop_up(postid){
         }
     };
     http.send(toServer);
+    
+    var postIDent="postID="+postid;
+    var http2 = new XMLHttpRequest();
+    http2.open('POST', '/logbook/GetComments', true);
+    http2.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    http2.onload = function () {
+        if (http2.status == 200)
+        {
+            console.log(http2.responseText);
+            document.getElementById("comments").innerHTML = "Comments: <br>"+http2.responseText;
+        }
+        else {
+            alert("Oops,something went wrong:" + http2.responseText);
+        }
+    };
+    http2.send(postIDent);
 }
 
 function delete_post(postid,mode){
@@ -1235,10 +1253,29 @@ function delete_user(){
             var signup = "<button " + button_type1 + button_action1 + button_class1 + ">Sign Up</button>";
             document.getElementById("actionbuttons").innerHTML = login + signup;
             console.log(http.responseText);
-        }
+        };
         http.send();
     }
     else{
         alert("Deletion Cancelled");
     }
+}
+
+function add_comment(postID){
+    var postIDent="postID="+postID;
+    var comment="&comment="+document.getElementById("commentarea"+postID).value
+    var toServer=postIDent+comment;
+    var http = new XMLHttpRequest();
+    http.open('POST', '/logbook/AddComment', true);
+    http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    http.onload = function () {
+        if (http.status == 200)
+        {
+            console.log(http.responseText);
+        }
+        else {
+            alert("Oops,something went wrong:" + http.responseText);
+        }
+    };
+    http.send(toServer);
 }
