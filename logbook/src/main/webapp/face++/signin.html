@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title id="title">Login to logbook!</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="C:\Users\user\Desktop\VSCode\hy359-2019-a2\logbook\css\style_logbook.css"
+      />
+      <script type="text/javascript" src="C:\Users\user\Desktop\VSCode\hy359-2019-a2\logbook\javascript\my_javascript.js"></script>
+    <script src="js/signin.js"></script>
+  </head>
+
+  <body>
+    <section class="myform">
+      <label>Username:<br /></label>
+      <input
+        type="text"
+        name="username"
+        id="username"
+        pattern="[a-zA-Z]{8,}"
+        value=""
+        title="Eight or more latin characters"
+        required
+        onclick="autocompletion(form1)"
+      /><br /><br />
+      <label>Password:<br /></label>
+      <input
+        type="password"
+        name="password1"
+        pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,10}$"
+        title="Enter a password between 6 and 10 characters containing at least one latin letter one number and one special character"
+        required
+      />
+      <br>
+      <input type="radio" name="uploadradio" id="uploadradio" 
+                value="uploadphoto" title="Upload a Photo" 
+                >Search user
+      <br /><br />
+      <div >
+          <video id='video' width='640' height='480' autoplay></video>
+          <canvas id='canvas' width='640' height='480'></canvas>
+          <script>
+            faceRec.init();
+          </script>
+        </div><br>
+    </section>
+  </body>
+</html>
