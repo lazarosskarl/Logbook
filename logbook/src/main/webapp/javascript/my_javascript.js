@@ -543,12 +543,17 @@ function show_user_info()
                 document.getElementById("interests").value=response.interests;
                 document.getElementById("info").value=response.info;
                 
+                var button_typeDEL ="type = "+'"' +"button" +'" '+" id="+'"'+"deleteuser"+'"';
+                var button_actionDEL = "onclick ="+'"'+"delete_user()"+'"';
+                var button_classDEL = "class ="+ '"'+"mybutton"+'"';
+                var deleteuser="<button "+button_typeDEL+button_actionDEL+button_classDEL+">Delete account</button>";
+                
                 var button_type ="type = "+'"' +"button" +'" '+" id="+'"'+"updateuser"+'"';
                 var button_action = "onclick ="+'"'+"update_user()"+'"';
                 var button_class = "class ="+ '"'+"mybutton"+'"';
                 var update="<button "+button_type+button_action+button_class+">Update account</button>";
             
-                document.getElementById("buttonarea").innerHTML=update;
+                document.getElementById("buttonarea").innerHTML=update+deleteuser;
                 document.getElementById("form1").style.display="block";
                 document.getElementById("form2").style.display="none";
                 document.getElementById("intro").style.display="none";
@@ -946,6 +951,10 @@ function show_post_area(){
     }
 }
 function show_posts(mode){
+  document.getElementById("loginscreen").style.display="block";
+  document.getElementById("form1").style.display="none";
+  document.getElementById("form2").style.display="none";
+  document.getElementById("intro").style.display="none";
   var username;
   var flag=false;
   if(mode==0){
@@ -1019,7 +1028,6 @@ function show_posts(mode){
                 tmplat[i]=counter.latitude;
             }
             document.getElementById("infoscreen").innerHTML=html;
-            
         setTimeout(function(){
                 for(var y = 0; y < tmpids.length; y++){
                 post_address(tmplon[y],tmplat[y],tmpids[y]);
@@ -1188,4 +1196,41 @@ function check_image_file(){
     };
     reader.readAsDataURL(e.target.files[0]);     
     }
+}
+
+function delete_user(){
+    var http = new XMLHttpRequest();
+    alert("OPAAAA");
+    http.open('GET', '/logbook/DeleteUser',true);
+        http.onload = function() {
+            // Do whatever with response
+            console.log(http.responseText);
+            document.getElementById("username").value=" ";
+            document.getElementById("email").value=" ";
+            document.getElementById("password1").value="";
+            document.getElementById("firstname").value=" ";
+            document.getElementById("lastname").value=" ";
+            document.getElementById("birthday").value="";
+            //document.getElementById("country").value=" ";
+            document.getElementById("city").value=" ";
+            document.getElementById("address").value=" ";
+            document.getElementById("prof").value=" ";
+            document.getElementById("interests").value=" ";
+            document.getElementById("info").value=" ";
+            document.getElementById("login").style.display="none";
+            document.getElementById("form1").style.display="none";
+            document.getElementById("loginscreen").style.display="none";
+            document.getElementById("intro").style.display="block";
+            var button_type ="type = "+'"' +"button" +'" '+" id="+'"'+"indexlogin"+'"';
+            var button_action = "onclick ="+'"'+"login()"+'"';
+            var button_class = "class ="+ '"'+"mybutton"+'"';
+            var login="<button "+button_type+button_action+button_class+">Login</button>";
+            var button_type1 ="type = "+'"' +"button" +'" '+" id="+'"'+"indexsign"+'"';
+            var button_action1 = "onclick ="+'"'+"signup()"+'"';
+            var button_class1 = "class ="+ '"'+"mybutton"+'"';
+            var signup="<button "+button_type1+button_action1+button_class1+">Sign Up</button>";
+            document.getElementById("actionbuttons").innerHTML=login + signup;
+            console.log(http.responseText);
+        }
+        http.send();
 }

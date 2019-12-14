@@ -52,6 +52,10 @@
         <servlet-name>GetPostByID</servlet-name>
         <servlet-class>gr.csd.uoc.cs359.winter2019.logbook.GetPostByID</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DeleteUser</servlet-name>
+        <servlet-class>gr.csd.uoc.cs359.winter2019.logbook.DeleteUser</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>SignUpServlet</servlet-name>
         <url-pattern>/SignUpServlet</url-pattern>
@@ -103,6 +107,10 @@
     <servlet-mapping>
         <servlet-name>GetPostByID</servlet-name>
         <url-pattern>/GetPostByID</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteUser</servlet-name>
+        <url-pattern>/DeleteUser</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
